@@ -7,5 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chris Bargren",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cbargren/xkcd-bot.git"
+  },
+  "dependencies": {
+    "bluebird": "^3.3.1",
+    "botkit": "0.0.5",
+    "lodash": "^4.3.0",
+    "xkcd-cli": "^1.0.4"
+  }
 }
