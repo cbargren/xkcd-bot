@@ -1,10 +1,11 @@
+'use strict';
 
 const Botkit = require('botkit');
 const Promise = require('bluebird');
 const XKCD = require('xkcd-cli');
 const _ = require('lodash');
 
-const IGNORED_WORDS = ['xkcd', '@xkcd'];
+const IGNORED_WORDS = ['@xkcd'];
 
 const controller = Botkit.slackbot({
   json_file_store: './saveData'
@@ -15,20 +16,36 @@ const bot = controller.spawn({
 }).startRTM();
 
 controller.on('mention,direct_mention,direct_message', function (bot, message) {
-  console.log(JSON.stringify(message));
-  const words = _.difference(
+  let words = _.difference(
     _.split(message.text, ' '),
     IGNORED_WORDS
   );
-  console.log(words);
+  if (words.length === 0) {
+    words = [''];
+  }
 
   XKCD(words, function(err, result) {
     if (err) {
       console.error(err);
       return;
     }
-    console.log(result);
-    bot.reply(message, JSON.stringify(result));
+
+    var entry = _.sample(result);
+    if (entry) {
+      bot.reply(message, 'https://xkcd.com/' + entry + '/');
+    } else {
+      XKCD([''], function(err, result) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        var entry = _.sample(result);
+        if (entry) {
+          bot.reply(message, 'https://xkcd.com/' + entry + '/');
+        }
+      });
+    }
   });
 });
 
